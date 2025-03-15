@@ -1,20 +1,21 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom";
-import { Navbar } from "./components/Navbar/Navbar";
+import { BeforeAuthNavbar } from "./components/Navbar/BeforeAuthNavbar";
+import { AfterAuthNavbar } from "./components/Navbar/AfterAuthNavbar";
 import { Home } from "./components/pages/Home";
 import Explore from "./components/pages/Explore";
-import { AboutUs } from "./components/pages/AboutUs";
-import { Contact } from "./components/pages/Contact";
 import { SignupForm } from "./components/auth/SignupForm";
 import { SigninForm } from "./components/auth/SigninForm";
+import { useAuth, AuthProvider } from "./context/authContext";
+
 function App() {
+  const { isAuthenticated } = useAuth(); // isAuthenticated is now correctly typed
+
   return (
     <BrowserRouter>
-      <Navbar />
+      {isAuthenticated ? <AfterAuthNavbar /> : <BeforeAuthNavbar />}
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/explore" element={<Explore />} />
-        <Route path="/aboutUs" element={<AboutUs />} />
-        <Route path="/contact" element={<Contact />} />
         <Route path="/signup" element={<SignupForm />} />
         <Route path="/signin" element={<SigninForm />} />
       </Routes>
@@ -22,4 +23,10 @@ function App() {
   );
 }
 
-export default App;
+export default function AppWrapper() {
+  return (
+    <AuthProvider>
+      <App />
+    </AuthProvider>
+  );
+}
